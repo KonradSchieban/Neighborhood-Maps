@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Neighborhood Map</title>
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+	
+	<!--
+	<div id="cat" data-bind="with: currentCat">
+		<h2 id="cat-name" data-bind="text: name"></h2>
+		<h3 id="cat-level" data-bind="text: level"></h3>
+		<div id="cat-count" data-bind="text: clickCount"></div>
+		<img id="cat-img" src="" alt="cute cat" data-bind="click: $parent.incrementCounter, attr: {src: imgSrc}">
+		<ul data-bind="foreach: nickNames">
+			<li data-bind="text: nickName"></li>
+		</ul>
+		
+	</div>
+	-->
+	<div class="container">
+        <header class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+				<h1>Neighborhood Map</h1>
+			</div>
+		</header>
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<hr>
+			</div>
+		</div>
+		<div class="row main-row">
+			<div class="col-md-4 col-sm-4 col-xs-4">
+				<p>some stuff</p>
+			</div>
+			<div class="col-md-8 col-sm-8 col-xs-8 map-container">
+				<div id="map"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<hr>
+			</div>
+		</div>
+	</div>
+	
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1Jg7sAvCB45oZF5Zm5Ig1gwKtYg7LFj0&libraries=places&callback=initMap" async defer></script>
+	<script src="js/libs/jquery.min.js"></script>
+	<script src="js/libs/knockout-3.4.1.js"></script>
+	<script src="js/app.js">0</script>
+</body>
+</html>
+
+
+
