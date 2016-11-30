@@ -13,9 +13,9 @@ function initMap() {
 	var service = new google.maps.places.PlacesService(map);
 	service.nearbySearch({
 		location: initPosition,
-			radius: 500,
-			type: ['Dutch']
-		}, callback);
+		radius: 500,
+		type: ['Restaurant']
+	}, callback);
 }
 
 function callback(results, status) {
@@ -50,4 +50,38 @@ function createMarker(place) {
 		}
 	}
 }
+
+
+var Model = function(data){
+	
+	this.initCoordinates = ko.observable(data.initCoordinates);	
+	this.searchString = ko.observable(data.searchString);
+	this.searchRadius = ko.observable(data.searchRadius);
+	
+}
+
+
+var ViewModel = function(){
+	
+	this.model = ko.observable(new Model({
+		initCoordinates: {lat: 42.33800859999999, lng: -71.1251311},
+		searchString: "Cafe",
+		searchRadius: 100
+	})) ;
+	
+	this.tests = function() {
+		
+		var bla = $('#searchString').val();
+		this.searchString(bla);
+		
+		console.log(bla);
+		
+    }
+	
+	
+	
+}
+
+ko.applyBindings(new ViewModel());
+
 
