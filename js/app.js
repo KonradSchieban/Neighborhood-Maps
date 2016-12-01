@@ -1,18 +1,26 @@
 var map;
 var infowindow;
 	  
-function initMap() {
-	var initPosition = {lat: 42.33800859999999, lng: -71.1251311};
+//var initPosition = {lat: 42.33800859999999, lng: -71.1251311};
+var position;	  
+	  
+function initMap(position) {
+	
+	if(position){
+		console.log(position);
+	}else{
+		position = {lat: 42.33800859999999, lng: -71.1251311};
+	}
 
 	map = new google.maps.Map(document.getElementById('map'), {
-		center: initPosition,
+		center: position,
 		zoom: 15
 	});
 
 	infowindow = new google.maps.InfoWindow();
 	var service = new google.maps.places.PlacesService(map);
 	service.nearbySearch({
-		location: initPosition,
+		location: position,
 		radius: 500,
 		type: ['Restaurant']
 	}, callback);
@@ -72,9 +80,21 @@ var ViewModel = function(){
 	this.tests = function() {
 		
 		var bla = $('#searchString').val();
+		bla.replace(/ /g, "+");
 		this.searchString(bla);
 		
 		console.log(bla);
+		
+		var mapsGetResponse = $.ajax({
+			url: 'http://maps.google.com/maps/api/geocode/json?address=' + bla,
+			success: function (result) {
+				if (result.isOk == false) alert(result.message);
+			},
+			async: false
+		});
+		
+		initMap(mapsGetResponse.responseJSON.results[0].geometry.location);
+		
 		
     }
 	
