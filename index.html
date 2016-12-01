@@ -32,14 +32,28 @@
 				<hr>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				<form id="searchStringForm">
-					Search String:
-					<input type="text" id="searchString" name="searchString" value="sss">
-					<input type="submit" value="Search" data-bind="click: $parent.tests">
-				</form>
-				<br>
+		
+		<div class="form-group row">
+			<label for="searchLocation" class="col-xs-2 col-form-label">Location</label>
+			<div class="col-xs-10">
+				<input class="form-control" type="email" value="" id="searchLocation">
+				</div>
+			</div>
+		<div class="form-group row">
+			<label for="searchString" class="col-xs-2 col-form-label">Search Sring:</label>
+			<div class="col-xs-10">
+				<input class="form-control" type="text" value="" id="searchString">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="searchRadius" class="col-xs-2 col-form-label">Radius</label>
+			<div class="col-xs-10">
+				<input class="form-control" type="search" value="200" id="searchRadius">
+				</div>
+			</div>
+		<div class="form-group row">
+			<div class="col-xs-12">
+				<button type="submit" class="btn btn-primary" data-bind="click: $parent.search">Search</button>
 			</div>
 		</div>
 		<div class="row main-row">
@@ -59,7 +73,7 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<div class="infos">
 					<ul>
-						<li >Coordinates: <span data-bind="text: initCoordinates().lat"></span>, <span data-bind="text: initCoordinates().lng"></span></li>
+						<li >Coordinates: <span data-bind="text: coordinates().lat"></span>, <span data-bind="text: coordinates().lng"></span></li>
 						<li data-bind="text: searchString"></li>	
 						<li data-bind="text: searchRadius"></li>
 					</ul>

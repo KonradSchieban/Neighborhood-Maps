@@ -1,29 +1,31 @@
 var map;
-var infowindow;
+var infowindow;  
 	  
-//var initPosition = {lat: 42.33800859999999, lng: -71.1251311};
-var position;	  
-	  
-function initMap(position) {
+function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
 	
-	if(position){
-		console.log(position);
-	}else{
-		position = {lat: 42.33800859999999, lng: -71.1251311};
+	if(!positionInput){
+		positionInput = {lat: 42.33800859999999, lng: -71.1251311};
+	}
+	if(!radiusInput){
+		radiusInput = 500;
+	}
+	if(!nearbySearchTypeInput){
+		nearbySearchTypeInput = 'Restaurant';
 	}
 
 	map = new google.maps.Map(document.getElementById('map'), {
-		center: position,
+		center: positionInput,
 		zoom: 15
 	});
 
 	infowindow = new google.maps.InfoWindow();
 	var service = new google.maps.places.PlacesService(map);
 	service.nearbySearch({
-		location: position,
-		radius: 500,
-		type: ['Restaurant']
+		location: positionInput,
+		radius: radiusInput,
+		type: [nearbySearchTypeInput]
 	}, callback);
+	console.log(nearbySearchTypeInput);
 }
 
 function callback(results, status) {
@@ -62,7 +64,7 @@ function createMarker(place) {
 
 var Model = function(data){
 	
-	this.initCoordinates = ko.observable(data.initCoordinates);	
+	this.coordinates = ko.observable(data.coordinates);	
 	this.searchString = ko.observable(data.searchString);
 	this.searchRadius = ko.observable(data.searchRadius);
 	
@@ -72,33 +74,36 @@ var Model = function(data){
 var ViewModel = function(){
 	
 	this.model = ko.observable(new Model({
-		initCoordinates: {lat: 42.33800859999999, lng: -71.1251311},
+		coordinates: {lat: 42.33800859999999, lng: -71.1251311},
 		searchString: "Cafe",
 		searchRadius: 100
 	})) ;
 	
-	this.tests = function() {
+	this.search = function() {
 		
-		var bla = $('#searchString').val();
-		bla.replace(/ /g, "+");
-		this.searchString(bla);
+		var inputSearchStrRaw = $('#searchLocation').val();
+		inputSearchStrRaw.replace(/ /g, "+");
+		this.searchString(inputSearchStrRaw);
 		
-		console.log(bla);
+		var inputRadiusStrRaw = $('#searchRadius').val();
+		this.searchRadius(inputRadiusStrRaw);
+		
+		var inputStringStrRaw = $('#searchString').val();
+		this.searchString(inputStringStrRaw);
 		
 		var mapsGetResponse = $.ajax({
-			url: 'http://maps.google.com/maps/api/geocode/json?address=' + bla,
+			url: 'http://maps.google.com/maps/api/geocode/json?address=' + inputSearchStrRaw,
 			success: function (result) {
 				if (result.isOk == false) alert(result.message);
 			},
 			async: false
 		});
 		
-		initMap(mapsGetResponse.responseJSON.results[0].geometry.location);
+		this.coordinates(mapsGetResponse.responseJSON.results[0].geometry.location);
 		
+		initMap(this.coordinates(), this.searchRadius(), this.searchString());
 		
     }
-	
-	
 	
 }
 
