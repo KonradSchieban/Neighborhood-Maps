@@ -4,23 +4,11 @@
     <meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<title>Neighborhood Map</title>
-	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-	
-	<!--
-	<div id="cat" data-bind="with: currentCat">
-		<h2 id="cat-name" data-bind="text: name"></h2>
-		<h3 id="cat-level" data-bind="text: level"></h3>
-		<div id="cat-count" data-bind="text: clickCount"></div>
-		<img id="cat-img" src="" alt="cute cat" data-bind="click: $parent.incrementCounter, attr: {src: imgSrc}">
-		<ul data-bind="foreach: nickNames">
-			<li data-bind="text: nickName"></li>
-		</ul>
-		
-	</div>
-	-->
+
 	<div class="container" data-bind="with: model">
         <header class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
@@ -36,13 +24,13 @@
 		<div class="form-group row">
 			<label for="searchLocation" class="col-xs-2 col-form-label">Location</label>
 			<div class="col-xs-10">
-				<input class="form-control" type="email" value="" id="searchLocation">
+				<input class="form-control" type="email" value="Boston" id="searchLocation">
 				</div>
 			</div>
 		<div class="form-group row">
 			<label for="searchString" class="col-xs-2 col-form-label">Search Sring:</label>
 			<div class="col-xs-10">
-				<input class="form-control" type="text" value="" id="searchString">
+				<input class="form-control" type="text" value="Restaurant" id="searchString">
 			</div>
 		</div>
 		<div class="form-group row">
@@ -56,9 +44,20 @@
 				<button type="submit" class="btn btn-primary" data-bind="click: $parent.search">Search</button>
 			</div>
 		</div>
+		<div class="row error-message">
+			<div class="col-xs-12">
+				<p data-bind="text: errorMessage"></p>
+			</div>
+		</div>
 		<div class="row main-row">
 			<div class="col-md-4 col-sm-4 col-xs-4">
-				<p data-bind="click: $parent.tests">some stuff</p>
+				
+				<ul class="list-group" data-bind="foreach: markersMap">
+					
+					<li class="list-group-item"><a href="#" data-bind="text: name, click: function () { $root.setCurrentItem(name) }"></a></li>
+				
+				</ul>
+				
 			</div>
 			<div class="col-md-8 col-sm-8 col-xs-8 map-container">
 				<div id="map"></div>
@@ -69,6 +68,7 @@
 				<hr>
 			</div>
 		</div>
+		<!--
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<div class="infos">
@@ -77,6 +77,25 @@
 						<li data-bind="text: searchString"></li>	
 						<li data-bind="text: searchRadius"></li>
 					</ul>
+				</div>
+			</div>
+		</div>
+		-->
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="wiki">
+					<h3 class="wikiLinks">Wikipedia Links</h3>
+				
+					<ul data-bind="foreach: wikiJSON">
+					
+						<li>
+							<p data-bind="text: description"></p>
+							<a href="" data-bind="text: name, attr: {href: url}"></a>
+							<br>
+						</li>
+					
+					</ul>
+				
 				</div>
 			</div>
 		</div>
