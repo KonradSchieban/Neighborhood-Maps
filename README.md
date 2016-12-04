@@ -23,6 +23,7 @@ After clicking the search button a list of of names are presented next to the ma
 
 <h2>How to Run the Application</h2>
 The source code can be downloaded using Git with the command
+
 	> git clone "https://github.com/KonradSchieban/Neighborhood-Maps.git"
 
 Then simply navigate to the directory and open the file index.html in the browser.	
