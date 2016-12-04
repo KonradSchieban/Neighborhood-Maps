@@ -4,6 +4,7 @@ var markers = [];
 	
 function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
 	
+	// when map is created the first time, all inputs are set to default values
 	if(!positionInput){
 		positionInput = {lat: 42.33800859999999, lng: -71.1251311};
 	}
@@ -21,14 +22,12 @@ function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
 
 	infowindow = new google.maps.InfoWindow();
 	var service = new google.maps.places.PlacesService(map);
-	var a = service.nearbySearch({
+	service.nearbySearch({
 		location: positionInput,
 		radius: radiusInput,
 		type: [nearbySearchTypeInput]
 	}, callback);
-	
-	console.log(a);
-	
+		
 }
 
 function callback(results, status) {
@@ -69,14 +68,14 @@ function createMarker(place) {
 
 var Model = function(data){
 	
-	this.coordinates = ko.observable(data.coordinates);	
-	this.searchString = ko.observable(data.searchString);
-	this.searchRadius = ko.observable(data.searchRadius);
-	this.markersMap = ko.observableArray(data.markersMap);
-	this.currentItem = ko.observable(data.currentItem);
-	this.errorMessage = ko.observable(data.errorMessage);
+	this.coordinates = ko.observable(data.coordinates);			//search input
+	this.searchString = ko.observable(data.searchString);		//search input
+	this.searchRadius = ko.observable(data.searchRadius);		//search input
+	this.markersMap = ko.observableArray(data.markersMap);		//JSON object of marker names
+	this.currentItem = ko.observable(data.currentItem);			//name of the list item which has been clicked on (used for Wikipedia search)
+	this.errorMessage = ko.observable(data.errorMessage);		//empty string if search was good, poulated with error string otherwise
 	
-	this.wikiResponse = ko.observable();
+	this.wikiResponse = ko.observable();						//JSON reponse object which is returned by the Wikipedia API
 	ko.computed(function() {
 		
 		console.log("computing wikiResponse");
@@ -88,8 +87,6 @@ var Model = function(data){
 			
 			var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + this.currentItem() + '&format=json&callback=wikiCallback';
 		
-			// Whenever "pageIndex", "sortColumn", or "sortDirection" change, this function will re-run and issue
-			// an Ajax request. When the Ajax request completes, assign the resulting value to "queryResults"
 			$.ajax({
 				url: wikiUrl,
 				dataType: "jsonp",
@@ -104,7 +101,7 @@ var Model = function(data){
 	}, this);
 
 	
-	this.wikiJSON = ko.computed(function(){
+	this.wikiJSON = ko.computed(function(){						//JSON object which is contains the name, description and URL of all Wikipedia articles which are returned
 		
 		var wikiJSONnew = [];
 		
@@ -113,8 +110,6 @@ var Model = function(data){
 		if(this.wikiResponse()){
 			
 			console.log("actually computing wikiJSON");
-			console.log(this.wikiResponse);
-			console.log(this.wikiResponse());
 		
 			var nameList = this.wikiResponse()[1];
 			var descriptionList = this.wikiResponse()[2];
@@ -149,15 +144,17 @@ var Model = function(data){
 
 var ViewModel = function(){
 	
+	// Initialize model with default data
 	this.model = ko.observable(new Model({
 		coordinates: {lat: 42.33800859999999, lng: -71.1251311},
-		searchString: "Cafe",
+		searchString: "Restaurant",
 		searchRadius: 100,
 		markersMap: markers,
 		currentItem: "",
 		errorMessage: ""
 	})) ;
 	
+	// Function which is called when someone clicks the search button
 	this.search = function() {
 		
 		var inputSearchStrRaw = $('#searchLocation').val();
@@ -167,8 +164,9 @@ var ViewModel = function(){
 		this.errorMessage("");
 		
 		if(inputSearchStrRaw && inputRadiusStrRaw && inputStringStrRaw){
+			//all inputs are provided
 		
-			inputSearchStrRaw.replace(/ /g, "+");
+			inputSearchStrRaw.replace(/ /g, "+"); // Maps API needs inputs separated with a "+", not with spaces
 			this.searchString(inputSearchStrRaw);
 			this.searchRadius(inputRadiusStrRaw);
 			this.searchString(inputStringStrRaw);
