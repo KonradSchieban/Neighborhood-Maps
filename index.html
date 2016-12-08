@@ -25,8 +25,8 @@
 			<label for="searchLocation" class="col-xs-2 col-form-label">Location</label>
 			<div class="col-xs-10">
 				<input class="form-control" type="email" value="Brookline, MA" id="searchLocation">
-				</div>
 			</div>
+		</div>
 		<div class="form-group row">
 			<label for="searchString" class="col-xs-2 col-form-label">Search Sring:</label>
 			<div class="col-xs-10">
@@ -51,8 +51,15 @@
 		</div>
 		<div class="row main-row">
 			<div class="col-md-4 col-sm-4 col-xs-4">
+
+				<div class="form-group row">
+					<label for="filter" class="col-xs-2 col-form-label">Filter</label>
+					<div class="col-xs-10">
+						<input class="form-control" value="" data-bind="value: listFilter, valueUpdate: 'afterkeydown'" id="filter">
+					</div>
+				</div>
 				
-				<ul class="list-group" data-bind="foreach: markersMap">
+				<ul class="list-group" data-bind="foreach: markersMapFiltered">
 					
 					<li class="list-group-item"><a href="#" data-bind="text: name, click: function () { $root.setCurrentItem(name) }"></a></li>
 				
@@ -88,10 +95,12 @@
 		</div>
 	</div>
 	
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1Jg7sAvCB45oZF5Zm5Ig1gwKtYg7LFj0&libraries=places&callback=initMap" async defer></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1Jg7sAvCB45oZF5Zm5Ig1gwKtYg7LFj0&libraries=places&callback=initMap" async defer></script>
 	<script src="js/libs/jquery.min.js"></script>
 	<script src="js/libs/knockout-3.4.1.js"></script>
+	<script type="text/javascript" src="js/sampleData.js"></script> 
 	<script src="js/app.js">0</script>
+    
 </body>
 </html>
 

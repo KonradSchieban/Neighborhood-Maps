@@ -1,6 +1,6 @@
 var map;
 var infowindow;
-var markers = [];  
+var markers = [];
 	
 function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
 	
@@ -71,9 +71,11 @@ var Model = function(data){
 	this.coordinates = ko.observable(data.coordinates);			//search input
 	this.searchString = ko.observable(data.searchString);		//search input
 	this.searchRadius = ko.observable(data.searchRadius);		//search input
-	this.markersMap = ko.observableArray(data.markersMap);		//JSON object of marker names
 	this.currentItem = ko.observable(data.currentItem);			//name of the list item which has been clicked on (used for Wikipedia search)
 	this.errorMessage = ko.observable(data.errorMessage);		//empty string if search was good, poulated with error string otherwise
+	this.markersMap = ko.observableArray(data.markersMap);
+	this.markersMapFiltered = ko.observableArray(data.markersMapFiltered);
+	this.listFilter = ko.observable(data.listFilter);
 	
 	this.wikiResponse = ko.observable();						//JSON reponse object which is returned by the Wikipedia API
 	ko.computed(function() {
@@ -149,9 +151,11 @@ var ViewModel = function(){
 		coordinates: {lat: 42.33800859999999, lng: -71.1251311},
 		searchString: "Restaurant",
 		searchRadius: 100,
-		markersMap: markers,
+		markersMap: sampleData,
+		markersMapFiltered: sampleData,
 		currentItem: "",
-		errorMessage: ""
+		errorMessage: "",
+		listFilter: ""
 	})) ;
 	
 	// Function which is called when someone clicks the search button
@@ -184,6 +188,7 @@ var ViewModel = function(){
 				//if Google Maps finds something, update coordinates and markers observables
 				this.coordinates(mapsGetResponse.responseJSON.results[0].geometry.location);
 				this.markersMap(markers);
+				this.markersMapFiltered(markers);
 				
 				//reload map...
 				initMap(this.coordinates(), this.searchRadius(), this.searchString());
@@ -204,8 +209,37 @@ var ViewModel = function(){
 		
 	};
 	
+	// this function is called when the filter input form is modified
+	// Purpose: filter the list elements 
+	this.filterList = function() {
+
+		var filterInputRaw = $('#filter').val();
+		var filterInputUpperCase = filterInputRaw.toUpperCase();
+		
+		this.model().listFilter(filterInputRaw);
+		
+		var currentMarkersMap = this.model().markersMap();
+		var numberOfMarkers = currentMarkersMap.length;
+		
+		var newMarkersMap = [];
+		for(var i = 0; i < numberOfMarkers; i++){
+			
+			var markerUpperCaseName = currentMarkersMap[i].name.toUpperCase();
+			
+			if(markerUpperCaseName.includes(filterInputUpperCase)){
+				newMarkersMap.push(currentMarkersMap[i]);
+			}
+			
+		}
+		this.model().markersMapFiltered(newMarkersMap);
+		
+	};
+	
 }
 
-ko.applyBindings(new ViewModel());
+var viewModel = new ViewModel();
+ko.applyBindings(viewModel);
 
-
+viewModel.model().listFilter.subscribe(function(){
+    viewModel.filterList();
+});
