@@ -1,6 +1,7 @@
 var map;
 var infowindow;
 var markers = [];
+var markerGMapsObjects = [];
 	
 function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
 	
@@ -34,8 +35,9 @@ function callback(results, status) {
 	markers = [];
 	if (status === google.maps.places.PlacesServiceStatus.OK) {
 		for (var i = 0; i < results.length; i++) {
-			createMarker(results[i]);
+			var newMarkerObject = createMarker(results[i]);
 			markers.push(results[i]);
+			markerGMapsObjects.push(newMarkerObject);
 		}
 	}
 }
@@ -63,6 +65,8 @@ function createMarker(place) {
 			marker.setAnimation(google.maps.Animation.BOUNCE);
 		}
 	}
+	
+	return marker;
 }
 
 
@@ -228,6 +232,9 @@ var ViewModel = function(){
 			
 			if(markerUpperCaseName.includes(filterInputUpperCase)){
 				newMarkersMap.push(currentMarkersMap[i]);
+				markerGMapsObjects[i].setMap(map);
+			}else{
+				markerGMapsObjects[i].setMap(null);
 			}
 			
 		}
