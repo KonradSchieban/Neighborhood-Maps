@@ -32,6 +32,7 @@ function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
 }
 
 function callback(results, status) {
+	markerGMapsObjects = [];
 	markers = [];
 	if (status === google.maps.places.PlacesServiceStatus.OK) {
 		for (var i = 0; i < results.length; i++) {
@@ -59,11 +60,22 @@ function createMarker(place) {
 	});
 	
 	function toggleBounce() {
-		if (marker.getAnimation() !== null) {
-			marker.setAnimation(null);
-		} else {
-			marker.setAnimation(google.maps.Animation.BOUNCE);
+		
+		var numMarkers = markers.length;
+		var thisMarkersIndex;
+		for(var i = 0; i<numMarkers; i++){
+			markerGMapsObjects[i].setAnimation(null);
+			
+			if(markerGMapsObjects[i] == this){
+				thisMarkersIndex = i;
+				console.log(thisMarkersIndex);
+			}
 		}
+		
+		marker.setAnimation(google.maps.Animation.BOUNCE);
+
+		viewModel.highlightListEntry(markers[thisMarkersIndex].id);
+		
 	}
 	
 	return marker;
@@ -207,9 +219,17 @@ var ViewModel = function(){
     };
 	
 	// this function is executed when somebody clicks on a list item next to the map
-	this.setCurrentItem = function(searchStr) {
+	// purpose: set current item of knockout model and call function which 
+	this.setCurrentItem = function(searchStr, markerId) {
 
 		this.model().currentItem(searchStr);
+		
+		this.highlightListEntry(markerId);
+		
+		//toggleBounceMarkerById(markerId);
+		
+		showMarker(markerId);
+		//openInfoWindowByMarkerId(markerId)
 		
 	};
 	
@@ -241,6 +261,72 @@ var ViewModel = function(){
 		this.model().markersMapFiltered(newMarkersMap);
 		
 	};
+	
+	// highlight list item in marker list, given its id
+	this.highlightListEntry = function(markerId){
+		
+		var allListItemsJQ = $('#markers-list').children();;
+		var numMarkers = allListItemsJQ.length;
+		for(var i=0; i<numMarkers; i++){
+			$('#'+allListItemsJQ[i].id).removeClass('active')
+		}
+		
+		var currentListItemJQ = $('#'+markerId);
+		currentListItemJQ.addClass('active');
+		
+	}
+	
+	function toggleBounceMarkerById(markerId) {
+		
+		var numMarkers = markers.length;
+		
+		for(var i = 0; i<numMarkers; i++){
+			
+			if(markers[i].id == markerId){
+				markerGMapsObjects[i].setAnimation(google.maps.Animation.BOUNCE);
+			}else{
+				markerGMapsObjects[i].setAnimation(null);
+			}
+		}
+		
+	}
+	
+	function openInfoWindowByMarkerId(markerId){
+		
+		var numMarkers = markers.length;
+		
+		for(var i = 0; i<numMarkers; i++){
+			
+			if(markers[i].id == markerId){
+				console.log("MATCH");
+				/*
+				infowindow.setContent("asdf");
+				infowindow.open(map, markerGMapsObjects[i]);
+				*/
+				console.log(markerGMapsObjects[i]);
+				showMarker(i);
+				
+			}else{
+				infowindow.close(map, markerGMapsObjects[i]);
+			}
+		}
+		
+	}
+	
+	function showMarker(markerId) {
+		
+		var numMarkers = markers.length;
+		
+		for(var i = 0; i<numMarkers; i++){
+			
+			console.log(markers[i].id + "   " + markerId);
+			if(markers[i].id == markerId){
+				console.log("MATCH");
+				google.maps.event.trigger(markerGMapsObjects[i], 'click');
+			}
+		}
+	}
+	
 	
 }
 
