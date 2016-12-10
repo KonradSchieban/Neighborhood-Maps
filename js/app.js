@@ -2,6 +2,10 @@ var map;
 var infowindow;
 var markers = []; // list of JSON formatted results by google maps search
 var markerGMapsObjects = []; // actual google maps marker objects in an array
+
+function googleError(){
+	alert("Could not load Google Maps");
+}
 	
 //function to initialize google map (https://developers.google.com/maps/documentation/javascript/examples/map-simple?hl=de)
 function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
@@ -47,6 +51,8 @@ function callback(results, status) {
 			markers.push(results[i]);
 			markerGMapsObjects.push(newMarkerObject);
 		}
+	}else{
+		viewModel.model().errorMessage("Failed to call Google Places API");
 	}
 }
 
