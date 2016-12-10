@@ -43,6 +43,7 @@ function callback(results, status) {
 	}
 }
 
+
 function createMarker(place) {
 	var placeLoc = place.geometry.location;
 	var marker = new google.maps.Marker({
@@ -55,7 +56,16 @@ function createMarker(place) {
 	marker.addListener('click', toggleBounce);
 	
 	google.maps.event.addListener(marker, 'click', function() {
-		infowindow.setContent(place.name);
+		
+		if(place.hasOwnProperty('photos')){
+			var imgUrl = place.photos[0].getUrl({
+				maxWidth: 160
+			});
+			infowindow.setContent("<b>" + place.name + "</b><br><p>" + place.vicinity + "</p><br><img src="+imgUrl+">");
+		}else{
+			infowindow.setContent("<b>" + place.name + "</b><br><p>" + place.vicinity + "</p>");
+		}
+		
 		infowindow.open(map, this);
 	});
 	
@@ -150,9 +160,6 @@ var Model = function(data){
 		}else{
 			console.log("not actually computing wikiJSON");
 		}
-		
-		console.log("wikiJSONnew:");
-		console.log(wikiJSONnew);
 		
 		return wikiJSONnew;
 	},this);
