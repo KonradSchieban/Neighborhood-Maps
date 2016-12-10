@@ -219,17 +219,14 @@ var ViewModel = function(){
     };
 	
 	// this function is executed when somebody clicks on a list item next to the map
-	// purpose: set current item of knockout model and call function which 
+	// purpose: set current item of knockout model and call function which highlights
 	this.setCurrentItem = function(searchStr, markerId) {
 
 		this.model().currentItem(searchStr);
 		
 		this.highlightListEntry(markerId);
 		
-		//toggleBounceMarkerById(markerId);
-		
-		showMarker(markerId);
-		//openInfoWindowByMarkerId(markerId)
+		showMarkerOnMap(markerId);
 		
 	};
 	
@@ -276,52 +273,13 @@ var ViewModel = function(){
 		
 	}
 	
-	function toggleBounceMarkerById(markerId) {
+	// Simulate a click on marker with given markerId 
+	function showMarkerOnMap(markerId) {
 		
 		var numMarkers = markers.length;
-		
 		for(var i = 0; i<numMarkers; i++){
-			
-			if(markers[i].id == markerId){
-				markerGMapsObjects[i].setAnimation(google.maps.Animation.BOUNCE);
-			}else{
-				markerGMapsObjects[i].setAnimation(null);
-			}
-		}
-		
-	}
 	
-	function openInfoWindowByMarkerId(markerId){
-		
-		var numMarkers = markers.length;
-		
-		for(var i = 0; i<numMarkers; i++){
-			
 			if(markers[i].id == markerId){
-				console.log("MATCH");
-				/*
-				infowindow.setContent("asdf");
-				infowindow.open(map, markerGMapsObjects[i]);
-				*/
-				console.log(markerGMapsObjects[i]);
-				showMarker(i);
-				
-			}else{
-				infowindow.close(map, markerGMapsObjects[i]);
-			}
-		}
-		
-	}
-	
-	function showMarker(markerId) {
-		
-		var numMarkers = markers.length;
-		
-		for(var i = 0; i<numMarkers; i++){
-			
-			console.log(markers[i].id + "   " + markerId);
-			if(markers[i].id == markerId){
-				console.log("MATCH");
 				google.maps.event.trigger(markerGMapsObjects[i], 'click');
 			}
 		}
