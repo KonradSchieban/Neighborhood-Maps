@@ -1,8 +1,9 @@
 var map;
 var infowindow;
-var markers = [];
-var markerGMapsObjects = [];
+var markers = []; // list of JSON formatted results by google maps search
+var markerGMapsObjects = []; // actual google maps marker objects in an array
 	
+//function to initialize google map (https://developers.google.com/maps/documentation/javascript/examples/map-simple?hl=de)
 function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
 	
 	// when map is created the first time, all inputs are set to default values
@@ -18,7 +19,8 @@ function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
 
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: positionInput,
-		zoom: 15
+		zoom: 15,
+		fullscreenControl: true
 	});
 
 	infowindow = new google.maps.InfoWindow();
@@ -31,6 +33,11 @@ function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
 		
 }
 
+/*
+function which is called on async ajax request
+fills in markers array with response JSON objects
+and store google maps marker objects in markerGMapsObjects array
+*/
 function callback(results, status) {
 	markerGMapsObjects = [];
 	markers = [];
@@ -292,6 +299,7 @@ var ViewModel = function(){
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
 
+// Subscriber added to listFilter form. Whenever something changes in the filter, the filterList function is executed
 viewModel.model().listFilter.subscribe(function(){
     viewModel.filterList();
 });
