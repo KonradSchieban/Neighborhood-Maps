@@ -78,7 +78,6 @@ function createMarker(place) {
 			
 			if(markerGMapsObjects[i] == this){
 				thisMarkersIndex = i;
-				console.log(thisMarkersIndex);
 			}
 		}
 		
@@ -105,13 +104,10 @@ var Model = function(data){
 	
 	this.wikiResponse = ko.observable();						//JSON reponse object which is returned by the Wikipedia API
 	ko.computed(function() {
-		
-		console.log("computing wikiResponse");
+
 		// load wikipedia data
 		
 		if(this.currentItem()){
-			
-			console.log("actually computing wikiResponse");
 			
 			var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + this.currentItem() + '&format=json&callback=wikiCallback';
 		
@@ -122,8 +118,6 @@ var Model = function(data){
 				success: this.wikiResponse
 			});
 			
-		}else{
-			console.log("not actually computing wikiResponse");
 		}
 		
 	}, this);
@@ -133,11 +127,7 @@ var Model = function(data){
 		
 		var wikiJSONnew = [];
 		
-		console.log("computing wikiJSON");
-		
 		if(this.wikiResponse()){
-			
-			console.log("actually computing wikiJSON");
 		
 			var nameList = this.wikiResponse()[1];
 			var descriptionList = this.wikiResponse()[2];
@@ -157,8 +147,6 @@ var Model = function(data){
 				
 				wikiJSONnew.push(wikiJSONpart);
 			};
-		}else{
-			console.log("not actually computing wikiJSON");
 		}
 		
 		return wikiJSONnew;

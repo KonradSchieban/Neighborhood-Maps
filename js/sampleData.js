@@ -542,5 +542,3 @@ var sampleData = [{
 		"html_attributions": []
 	}
 ];
-
-console.log(sampleData);
