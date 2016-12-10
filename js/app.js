@@ -116,7 +116,9 @@ var Model = function(data){
 				dataType: "jsonp",
 				jsonp: "callback",
 				success: this.wikiResponse
-			});
+			}).fail(function() {
+				self.model().errorMessage("Failed to connect to Wikipedia - Check your connectivity");
+			});;
 			
 		}
 		
@@ -157,6 +159,9 @@ var Model = function(data){
 
 var ViewModel = function(){
 	
+	//store viewModel context in self
+	var self = this;
+	
 	// Initialize model with default data
 	this.model = ko.observable(new Model({
 		coordinates: {lat: 42.33800859999999, lng: -71.1251311},
@@ -189,24 +194,25 @@ var ViewModel = function(){
 			var mapsGetResponse = $.ajax({
 				url: 'http://maps.google.com/maps/api/geocode/json?address=' + inputSearchStrRaw,
 				success: function (result) {
-					if (result.isOk == false) alert(result.message);
-				},
-				async: false
+					if(mapsGetResponse.responseJSON.status == "OK"){
+				
+						//if Google Maps finds something, update coordinates and markers observables
+						self.model().coordinates(mapsGetResponse.responseJSON.results[0].geometry.location);
+						self.model().markersMap(markers);
+						self.model().markersMapFiltered(markers);
+						
+						//reload map...
+						initMap(self.model().coordinates(), self.model().searchRadius(), self.model().searchString());
+						
+					}else{
+						self.model().errorMessage("Did not find a Google Maps Location");
+					}
+				}
+			}).fail(function() {
+				self.model().errorMessage("Failed to connect to Google Maps - Check your connectivity");
 			});
 			
-			if(mapsGetResponse.responseJSON.status == "OK"){
-				
-				//if Google Maps finds something, update coordinates and markers observables
-				this.coordinates(mapsGetResponse.responseJSON.results[0].geometry.location);
-				this.markersMap(markers);
-				this.markersMapFiltered(markers);
-				
-				//reload map...
-				initMap(this.coordinates(), this.searchRadius(), this.searchString());
-				
-			}else{
-				this.errorMessage("Did not find a Google Maps Location");
-			}
+			
 		}else{
 			this.errorMessage("Please fill in all input forms!");
 		}	
