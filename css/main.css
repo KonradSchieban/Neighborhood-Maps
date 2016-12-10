@@ -18,13 +18,17 @@ html, body {
 .list-group-item {
     position: relative;
     display: block;
-    padding: 5px 15px; /* adjust here */
+    padding: 5px 15px;
     margin-bottom: -1px;
-    border: 1px solid #ddd;
-    line-height: 1em /* set to text height */
+    border: 1px solid gray;
+    line-height: 1em;
 }
 
 #map{
 	height: 100%;
 	width: 100%;
+}
+
+.list-group-item.active {
+	background-color: gray;
 }

@@ -61,7 +61,7 @@
 				
 				<ul class="list-group" id="markers-list" data-bind="foreach: markersMapFiltered">
 					
-					<li class="list-group-item" data-bind="attr: {id: id}"><a href="#" data-bind="text: name, click: function () { $root.setCurrentItem(name,id) }"></a></li>
+					<li class="list-group-item" data-bind="attr: {id: id}"><a id="list-group-item-link" href="#" data-bind="text: name, click: function () { $root.setCurrentItem(name,id) }"></a></li>
 				
 				</ul>
 				
