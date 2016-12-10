@@ -6,6 +6,8 @@ _Neighborhood-Maps_ is a single page JavaScript application which displays a map
 The user can specify the base location of the search, the search string which is used to find results with this keyword in the vicinity and the radius in m around the base location.
 After clicking the search button a list of of names are presented next to the maps. Another click on any list item displays a list of Wikipedia results at the bottom of the page.
 
+A filter input can be used to filter all list items in real-time which contain the provided string.
+
 <h2>1. Content</h2>
 
     - Neigborhood-Maps
