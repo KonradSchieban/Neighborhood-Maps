@@ -263,7 +263,7 @@ var ViewModel = function(){
 	// Purpose: filter the list elements 
 	this.filterList = function() {
 
-		var filterInputRaw = $('#filter').val();
+		var filterInputRaw = this.model().listFilter();
 		var filterInputUpperCase = filterInputRaw.toUpperCase();
 		
 		this.model().listFilter(filterInputRaw);
