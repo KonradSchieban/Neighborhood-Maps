@@ -283,9 +283,9 @@ var ViewModel = function(){
 			
 			if(markerUpperCaseName.includes(filterInputUpperCase)){
 				newMarkersMap.push(currentMarkersMap[i]);
-				markerGMapsObjects[i].setMap(map);
+				markerGMapsObjects[i].setVisible(true);
 			}else{
-				markerGMapsObjects[i].setMap(null);
+				markerGMapsObjects[i].setVisible(false);
 			}
 			
 		}
