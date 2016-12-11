@@ -33,3 +33,7 @@ html, body {
 .list-group-item.active {
 	background-color: gray;
 }
+
+.clicked {
+	background-color: green;
+}

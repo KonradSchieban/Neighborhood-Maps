@@ -108,7 +108,8 @@ var Model = function(data){
 	
 	var self = this;
 	
-	this.coordinates = ko.observable(data.coordinates);			//search input
+	this.coordinates = ko.observable(data.coordinates);
+	this.searchLocation = ko.observable(data.searchLocation);	//search input	
 	this.searchString = ko.observable(data.searchString);		//search input
 	this.searchRadius = ko.observable(data.searchRadius);		//search input
 	this.currentItem = ko.observable(data.currentItem);			//name of the list item which has been clicked on (used for Wikipedia search)
@@ -198,8 +199,9 @@ var ViewModel = function(){
 	// Initialize model with default data
 	this.model = ko.observable(new Model({
 		coordinates: {lat: 42.33800859999999, lng: -71.1251311},
+		searchLocation: 'Brookline',
 		searchString: 'Restaurant',
-		searchRadius: 100,
+		searchRadius: 500,
 		markersMap: sampleData,
 		markersMapFiltered: sampleData,
 		currentItem: '',
@@ -210,22 +212,15 @@ var ViewModel = function(){
 	// Function which is called when someone clicks the search button
 	this.search = function() {
 		
-		var inputSearchStrRaw = $('#searchLocation').val();
-		var inputRadiusStrRaw = $('#searchRadius').val();
-		var inputStringStrRaw = $('#searchString').val();
-		
 		this.errorMessage('');
 		
-		if(inputSearchStrRaw && inputRadiusStrRaw && inputStringStrRaw){
+		if(this.searchString() && this.searchRadius() && this.searchLocation()){
 			//all inputs are provided
 		
-			inputSearchStrRaw.replace(/ /g, '+'); // Maps API needs inputs separated with a '+', not with spaces
-			this.searchString(inputSearchStrRaw);
-			this.searchRadius(inputRadiusStrRaw);
-			this.searchString(inputStringStrRaw);
+			var searchLocationEscaped = this.searchLocation().replace(/ /g, '+');
 			
 			var mapsGetResponse = $.ajax({
-				url: 'http://maps.google.com/maps/api/geocode/json?address=' + inputSearchStrRaw,
+				url: 'http://maps.google.com/maps/api/geocode/json?address=' + searchLocationEscaped,
 				success: function (result) {
 					if(mapsGetResponse.responseJSON.status == 'OK'){
 				
@@ -299,7 +294,7 @@ var ViewModel = function(){
 		var allListItemsJQ = $('#markers-list').children();;
 		var numMarkers = allListItemsJQ.length;
 		for(var i=0; i<numMarkers; i++){
-			$('#'+allListItemsJQ[i].id).removeClass('active')
+			$('#'+allListItemsJQ[i].id).removeClass('active');
 		}
 		
 		var currentListItemJQ = $('#'+markerId);
