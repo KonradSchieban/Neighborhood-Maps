@@ -106,6 +106,8 @@ function createMarker(place) {
 
 var Model = function(data){
 	
+	var self = this;
+	
 	this.coordinates = ko.observable(data.coordinates);			//search input
 	this.searchString = ko.observable(data.searchString);		//search input
 	this.searchRadius = ko.observable(data.searchRadius);		//search input
@@ -119,8 +121,12 @@ var Model = function(data){
 	ko.computed(function() {
 
 		// load wikipedia data
-		
 		if(this.currentItem()){
+			
+			// Timeout function for JSONp
+			var wikiRequestTimeout = setTimeout(function(){
+				self.errorMessage("Failed to connect to Wikipedia - Timeout reached!");
+			}, 8000);
 			
 			var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + this.currentItem() + '&format=json&callback=wikiCallback';
 		
@@ -128,10 +134,13 @@ var Model = function(data){
 				url: wikiUrl,
 				dataType: "jsonp",
 				jsonp: "callback",
-				success: this.wikiResponse
-			}).fail(function() {
-				self.model().errorMessage("Failed to connect to Wikipedia - Check your connectivity");
-			});;
+				success: function(result){
+					self.wikiResponse(result);
+					clearTimeout(wikiRequestTimeout);
+				}
+			});
+			
+			
 			
 		}
 		
@@ -143,25 +152,36 @@ var Model = function(data){
 		var wikiJSONnew = [];
 		
 		if(this.wikiResponse()){
-		
+			// wikiResponse is undefined after loading the page
 			var nameList = this.wikiResponse()[1];
 			var descriptionList = this.wikiResponse()[2];
 			var urlList = this.wikiResponse()[3];
 			
-			for (var i = 0; i < nameList.length; i++) {
-				
-				var nameStr = nameList[i];
-				var descriptionStr = descriptionList[i];
-				var urlStr = urlList[i];
-				
+			if(nameList.length != 0){
+				// at least one Wikipedia record exists
+				for (var i = 0; i < nameList.length; i++) {
+					
+					var nameStr = nameList[i];
+					var descriptionStr = descriptionList[i];
+					var urlStr = urlList[i];
+					
+					var wikiJSONpart = {
+						"name":nameStr,
+						"description":descriptionStr,
+						"url":urlStr
+					}
+					
+					wikiJSONnew.push(wikiJSONpart);
+				};
+			}else{
 				var wikiJSONpart = {
-					"name":nameStr,
-					"description":descriptionStr,
-					"url":urlStr
+					"name":"",
+					"description":"no Wikipedia Entry Found",
+					"url":""
 				}
-				
+					
 				wikiJSONnew.push(wikiJSONpart);
-			};
+			}
 		}
 		
 		return wikiJSONnew;
