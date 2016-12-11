@@ -4,10 +4,10 @@ var markers = []; // list of JSON formatted results by google maps search
 var markerGMapsObjects = []; // actual google maps marker objects in an array
 
 function googleError(){
-	alert("Could not load Google Maps");
+	viewModel.model().errorMessage('Failed to connect to Google Maps API');
 }
 	
-//function to initialize google map (https://developers.google.com/maps/documentation/javascript/examples/map-simple?hl=de)
+//function to initialize google map
 function initMap(positionInput, radiusInput, nearbySearchTypeInput) {
 	
 	// when map is created the first time, all inputs are set to default values
@@ -52,7 +52,7 @@ function callback(results, status) {
 			markerGMapsObjects.push(newMarkerObject);
 		}
 	}else{
-		viewModel.model().errorMessage("Failed to call Google Places API");
+		viewModel.model().errorMessage('Failed to call Google Places API');
 	}
 }
 
@@ -74,9 +74,9 @@ function createMarker(place) {
 			var imgUrl = place.photos[0].getUrl({
 				maxWidth: 160
 			});
-			infowindow.setContent("<b>" + place.name + "</b><br><p>" + place.vicinity + "</p><br><img src="+imgUrl+">");
+			infowindow.setContent('<b>' + place.name + '</b><br><p>' + place.vicinity + '</p><br><img src='+imgUrl+'>');
 		}else{
-			infowindow.setContent("<b>" + place.name + "</b><br><p>" + place.vicinity + "</p>");
+			infowindow.setContent('<b>' + place.name + '</b><br><p>' + place.vicinity + '</p>');
 		}
 		
 		infowindow.open(map, this);
@@ -125,15 +125,15 @@ var Model = function(data){
 			
 			// Timeout function for JSONp
 			var wikiRequestTimeout = setTimeout(function(){
-				self.errorMessage("Failed to connect to Wikipedia - Timeout reached!");
+				self.errorMessage('Failed to connect to Wikipedia - Timeout reached!');
 			}, 8000);
 			
 			var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + this.currentItem() + '&format=json&callback=wikiCallback';
 		
 			$.ajax({
 				url: wikiUrl,
-				dataType: "jsonp",
-				jsonp: "callback",
+				dataType: 'jsonp',
+				jsonp: 'callback',
 				success: function(result){
 					self.wikiResponse(result);
 					clearTimeout(wikiRequestTimeout);
@@ -166,18 +166,18 @@ var Model = function(data){
 					var urlStr = urlList[i];
 					
 					var wikiJSONpart = {
-						"name":nameStr,
-						"description":descriptionStr,
-						"url":urlStr
+						'name':nameStr,
+						'description':descriptionStr,
+						'url':urlStr
 					}
 					
 					wikiJSONnew.push(wikiJSONpart);
 				};
 			}else{
 				var wikiJSONpart = {
-					"name":"",
-					"description":"no Wikipedia Entry Found",
-					"url":""
+					'name':'',
+					'description':'no Wikipedia Entry Found',
+					'url':''
 				}
 					
 				wikiJSONnew.push(wikiJSONpart);
@@ -198,13 +198,13 @@ var ViewModel = function(){
 	// Initialize model with default data
 	this.model = ko.observable(new Model({
 		coordinates: {lat: 42.33800859999999, lng: -71.1251311},
-		searchString: "Restaurant",
+		searchString: 'Restaurant',
 		searchRadius: 100,
 		markersMap: sampleData,
 		markersMapFiltered: sampleData,
-		currentItem: "",
-		errorMessage: "",
-		listFilter: ""
+		currentItem: '',
+		errorMessage: '',
+		listFilter: ''
 	})) ;
 	
 	// Function which is called when someone clicks the search button
@@ -214,12 +214,12 @@ var ViewModel = function(){
 		var inputRadiusStrRaw = $('#searchRadius').val();
 		var inputStringStrRaw = $('#searchString').val();
 		
-		this.errorMessage("");
+		this.errorMessage('');
 		
 		if(inputSearchStrRaw && inputRadiusStrRaw && inputStringStrRaw){
 			//all inputs are provided
 		
-			inputSearchStrRaw.replace(/ /g, "+"); // Maps API needs inputs separated with a "+", not with spaces
+			inputSearchStrRaw.replace(/ /g, '+'); // Maps API needs inputs separated with a '+', not with spaces
 			this.searchString(inputSearchStrRaw);
 			this.searchRadius(inputRadiusStrRaw);
 			this.searchString(inputStringStrRaw);
@@ -227,7 +227,7 @@ var ViewModel = function(){
 			var mapsGetResponse = $.ajax({
 				url: 'http://maps.google.com/maps/api/geocode/json?address=' + inputSearchStrRaw,
 				success: function (result) {
-					if(mapsGetResponse.responseJSON.status == "OK"){
+					if(mapsGetResponse.responseJSON.status == 'OK'){
 				
 						//if Google Maps finds something, update coordinates and markers observables
 						self.model().coordinates(mapsGetResponse.responseJSON.results[0].geometry.location);
@@ -238,16 +238,16 @@ var ViewModel = function(){
 						initMap(self.model().coordinates(), self.model().searchRadius(), self.model().searchString());
 						
 					}else{
-						self.model().errorMessage("Did not find a Google Maps Location");
+						self.model().errorMessage('Did not find a Google Maps Location');
 					}
 				}
 			}).fail(function() {
-				self.model().errorMessage("Failed to connect to Google Maps - Check your connectivity");
+				self.model().errorMessage('Failed to connect to Google Maps - Check your connectivity');
 			});
 			
 			
 		}else{
-			this.errorMessage("Please fill in all input forms!");
+			this.errorMessage('Please fill in all input forms!');
 		}	
 		
     };
